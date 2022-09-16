@@ -1,5 +1,8 @@
+import re
+
+
 def print_info(number_index, warn_index, message):
-    print(f'Line {number_index}: S00{warn_index} {message}')
+    print(f'Line {number_index + 1}: S00{warn_index} {message}')
 
 
 def too_long(line_file, number_index):
@@ -8,19 +11,42 @@ def too_long(line_file, number_index):
 
 
 def indentation(line_file, number_index):
-    low_letters = str([chr(x) for x in range(97, 123)])  # create lower letters abc
-    up_letters = low_letters.upper()
-    spaces = 0
-    for symbol in line_file:
-        if symbol == " " and symbol not in low_letters and symbol not in up_letters:
-            spaces += 1
-        else:
-            break
+    if line_file[0] == ' ':
+        if len(re.match(' +', line_file).group(0)) % 4 != 0:
+            print_info(number_index, 2, 'Indentation is not a multiple of four')
 
+
+def semicolon(line_file, number_index):
+    string = re.search("\'.*\'", line_file)
+    if line_file.find('#') == 0 or string is not None and ';' in string.group(0):
+        return
+    if re.match(".*;", line_file):
+        print_info(number_index, 3, 'Unnecessary semicolon')
+
+
+def two_spaces(line_file, number_index):
+    if re.search("[^ ] #", line_file):
+        print_info(number_index, 4, 'At least two spaces required before inline comments')
+
+
+def todo(line_file, number_index):
+    if re.search('#.*todo.*', line_file, re.IGNORECASE):
+        print_info(number_index, 5, 'TODO found')
+
+
+def blank_lines(line_file, number_index):
+    first_symbols.append(line_file[0])
+    first_symbols2 = ' '.join(first_symbols)
+    print('1', first_symbols2)
 
 path = 'bad_code.py'
 file = open(path, 'r')
+first_symbols = []
 for number, line in enumerate(file):
-    too_long(line, number)
-    indentation(line, number)
+    # too_long(line, number)
+    # indentation(line, number)
+    # semicolon(line, number)
+    # two_spaces(line, number)
+    # todo(line, number)
+    blank_lines(line, number)
 file.close()
