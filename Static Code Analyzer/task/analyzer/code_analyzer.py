@@ -17,15 +17,21 @@ def indentation(line_file, number_index):
 
 
 def semicolon(line_file, number_index):
+    lattice = line_file.find('#') == 0  # line starts with #
+    # conditions to avoid
     string = re.search("\'.*\'", line_file)
-    if line_file.find('#') == 0 or string is not None and ';' in string.group(0):
+    semicolon_string = string is not None and ';' in string.group(0)  # check if exists 'string' and ; in it
+    lattice_semicolon = re.search('#.*;', line_file)  # check if ; after #
+    if lattice or semicolon_string or lattice_semicolon:
         return
     if re.match(".*;", line_file):
         print_info(number_index, 3, 'Unnecessary semicolon')
 
 
 def two_spaces(line_file, number_index):
-    if re.search("[^ ] #", line_file):
+    if re.search("[^ ]{2}#", line_file) or re.search("[^ ] #", line_file):
+        if re.search('#.*#', line_file):
+            return
         print_info(number_index, 4, 'At least two spaces required before inline comments')
 
 
@@ -36,17 +42,26 @@ def todo(line_file, number_index):
 
 def blank_lines(line_file, number_index):
     first_symbols.append(line_file[0])
-    first_symbols2 = ' '.join(first_symbols)
-    print('1', first_symbols2)
+    count = 0
+    if first_symbols[-1] != '\n':
+        for i in reversed(first_symbols[:-1]):
+            if i == '\n':
+                count += 1
+            else:
+                break
+        if count > 2:
+            print_info(number_index, 6, 'More than two blank lines used before this line')
 
-path = 'bad_code.py'
+
+path = input()
+# path = 'bad_code.py'
 file = open(path, 'r')
 first_symbols = []
 for number, line in enumerate(file):
-    # too_long(line, number)
-    # indentation(line, number)
-    # semicolon(line, number)
-    # two_spaces(line, number)
-    # todo(line, number)
+    too_long(line, number)
+    indentation(line, number)
+    semicolon(line, number)
+    two_spaces(line, number)
+    todo(line, number)
     blank_lines(line, number)
 file.close()

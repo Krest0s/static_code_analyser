@@ -1,13 +1,7 @@
-print('What\'s your name?') # reading an input
-name = input();
-print(f'Hello, {name}');  # here is an obvious comment: this prints a greeting with a name
+print('hello!')
+# just a comment
+print('hello!')  #
+print('hello!')  # hello
 
-
-very_big_number = 11_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000
-print(very_big_number)
-
-
-
-def some_fun():
-    print('NO TODO HERE;;')
-    pass; # Todo something
+print('hello!') # hello
+print('hello!')# hello
