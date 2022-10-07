@@ -56,6 +56,25 @@ def blank_lines(line_file, number_index, file_name):
             print_info(file_name, number_index, 6, 'More than two blank lines used before this line')
 
 
+def construction_spaces(line_file, number_index, file_name):
+    if re.search('def {2,}', line_file):
+        print_info(file_name, number_index, 7, "Too many spaces after 'def'")
+    if re.search('class {2,}', line_file):
+        print_info(file_name, number_index, 7, "Too many spaces after 'class'")
+
+
+def camel_case(line_file, number_index, file_name):
+    if re.search(r'class\s+[^A-Z ]', line_file):
+        temp = line_file.split()
+        print_info(file_name, number_index, 8, f"Class name '{temp[1][:-1]}' should use CamelCase")
+
+
+def snake_case(line_file, number_index, file_name):
+    if re.search(r'def [A-Z]', line_file):
+        temp = line_file.split()
+        print_info(file_name, number_index, 9, f"Class name '{temp[1][:-1]}' should use snake_case")
+
+
 def analyze_file(file_name):
     file = open(file_name, 'r')
     for number, line in enumerate(file):
@@ -65,6 +84,9 @@ def analyze_file(file_name):
         two_spaces(line, number, file_name)
         todo(line, number, file_name)
         blank_lines(line, number, file_name)
+        construction_spaces(line, number, file_name)
+        camel_case(line, number, file_name)
+        snake_case(line, number, file_name)
     file.close()
 
 
